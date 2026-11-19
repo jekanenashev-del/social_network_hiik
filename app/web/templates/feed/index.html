@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Лента{% endblock %}
+
+{% macro feed_url(mode, sort, page=1) -%}
+/feed?mode={{ mode }}&amp;sort={{ sort }}&amp;page={{ page }}
+{%- endmacro %}
+
+{% block content %}
+<div class="container py-4">
+
+  {% if feed.show_login_banner %}
+  <div class="alert alert-info d-flex justify-content-between align-items-center" role="alert">
+    <span>Войдите, чтобы видеть свои подписки</span>
+    <a class="btn btn-sm btn-primary" href="/login">Войти</a>
+  </div>
+  {% endif %}
+
+  <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+    <div class="btn-group" role="group" aria-label="Режим ленты">
+      {% if feed.show_login_banner %}
+        <a class="btn btn-outline-secondary disabled" aria-disabled="true" tabindex="-1">Мои подписки</a>
+      {% else %}
+        <a class="btn btn-outline-primary {{ 'active' if feed.mode.value == 'subscriptions' }}"
+           href="{{ feed_url('subscriptions', feed.sort.value) }}">Мои подписки</a>
+      {% endif %}
+      <a class="btn btn-outline-primary {{ 'active' if feed.mode.value == 'global' }}"
+         href="{{ feed_url('global', feed.sort.value) }}">Глобальная</a>
+    </div>
+
+    <div class="btn-group" role="group" aria-label="Сортировка">
+      <a class="btn btn-outline-secondary {{ 'active' if feed.sort.value == 'new' }}"
+         href="{{ feed_url(feed.mode.value, 'new') }}">Новые</a>
+      <a class="btn btn-outline-secondary {{ 'active' if feed.sort.value == 'popular' }}"
+         href="{{ feed_url(feed.mode.value, 'popular') }}">Популярные</a>
+    </div>
+  </div>
+
+  {% if feed.items %}
+    {% for post in feed.items %}
+      {% set stats = feed.stats.get(post.id) %}
+      {% include "partials/post_card.html" %}
+    {% endfor %}
+
+    <nav class="d-flex justify-content-between align-items-center mt-4" aria-label="Страницы ленты">
+      {% if feed.has_prev %}
+        <a class="btn btn-outline-secondary"
+           href="{{ feed_url(feed.mode.value, feed.sort.value, feed.page - 1) }}">← Назад</a>
+      {% else %}<span></span>{% endif %}
+      <span class="text-muted small">Страница {{ feed.page }}</span>
+      {% if feed.has_next %}
+        <a class="btn btn-primary"
+           href="{{ feed_url(feed.mode.value, feed.sort.value, feed.page + 1) }}">Показать ещё</a>
+      {% else %}<span></span>{% endif %}
+    </nav>
+  {% else %}
+    <div class="text-center text-muted py-5">Пока нет постов. Подпишитесь на кого-нибудь</div>
+  {% endif %}
+
+</div>
+{% endblock %}
