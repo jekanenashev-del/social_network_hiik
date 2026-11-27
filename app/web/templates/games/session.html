@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html><body><h1>Партия</h1>
+<p>Статус: <span id="status">{{ state.status }}</span></p>
+<div id="board">{% for cell in state.state.board %}<button class="board-cell" data-cell="{{ loop.index0 }}">{{ cell or "" }}</button>{% endfor %}</div>
+<script>const SESSION_ID = "{{ session.id }}"; const PLAYER_ID = "{{ session.current_turn }}";</script>
+<script src="/static/js/games.js"></script></body></html>

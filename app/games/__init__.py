@@ -1,0 +1,1 @@
+from app.games import tic_tac_toe  # noqa: F401
