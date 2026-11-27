@@ -1,0 +1,4 @@
+<!DOCTYPE html>
+<html><body><h1>Игры</h1><ul>
+{% for game in games %}<li><a href="/games/{{ game.slug }}">{{ game.name }}</a></li>{% endfor %}
+</ul></body></html>
